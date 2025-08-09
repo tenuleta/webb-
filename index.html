@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> Pages Index</title>
+  <style>
+    body { font-family: sans-serif; padding: 2em; background: #f9f9f9; }
+    h1 { color: #333; }
+    ul { list-style: none; padding: 0; }
+    li { margin: 0.5em 0; }
+    a { color: #0366d6; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Available Pages</h1>
+  <ul id="list">Loading pages…</ul>
+  <script>
+    const owner = 'tenuleta';
+    const repo = 'web-final-project';
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/main?recursive=1`;
+    const ul = document.getElementById('list');
+    
+    fetch(apiUrl)
+      .then(res => res.json())
+      .then(data => {
+        const htmlFiles = data.tree
+          .filter(item => item.path.endsWith('.html'))
+          .sort((a, b) => a.path.localeCompare(b.path));
+        ul.innerHTML = '';
+        htmlFiles.forEach(file => {
+          const li = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = ./${file.path};
+          link.textContent = file.path;
+          li.appendChild(link);
+          ul.appendChild(li);
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        ul.textContent = 'Failed to load pages — try again later.';
+      });
+  </script>
+</body>
+</html>
