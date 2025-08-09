@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title> Pages Index</title>
+  <title>tenuleta/webb- Pages Index</title>
   <style>
-    body { font-family: sans-serif; padding: 2em; background: #f9f9f9; }
+    body { font-family: sans-serif; margin: 2em; background: #f9f9f9; }
     h1 { color: #333; }
     ul { list-style: none; padding: 0; }
     li { margin: 0.5em 0; }
@@ -13,25 +13,30 @@
   </style>
 </head>
 <body>
-  <h1>Available Pages</h1>
+  <h1>Available Pages in &quot;webb-&quot;</h1>
   <ul id="list">Loading pages…</ul>
+
   <script>
     const owner = 'tenuleta';
-    const repo = 'webb';
+    const repo = 'webb-';
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/main?recursive=1`;
     const ul = document.getElementById('list');
-    
+
     fetch(apiUrl)
       .then(res => res.json())
       .then(data => {
         const htmlFiles = data.tree
-          .filter(item => item.path.endsWith('.html'))
+          .filter(item => item.path.toLowerCase().endsWith('.html'))
           .sort((a, b) => a.path.localeCompare(b.path));
         ul.innerHTML = '';
+        if (htmlFiles.length === 0) {
+          ul.innerHTML = '<li>No HTML files found.</li>';
+          return;
+        }
         htmlFiles.forEach(file => {
           const li = document.createElement('li');
           const link = document.createElement('a');
-          link.href = ./${file.path};
+          link.href = ./${encodeURIComponent(file.path)};
           link.textContent = file.path;
           li.appendChild(link);
           ul.appendChild(li);
@@ -39,9 +44,8 @@
       })
       .catch(err => {
         console.error(err);
-        ul.textContent = 'Failed to load pages — try again later.';
+        ul.textContent = 'Failed to load pages — check repository or try again later.';
       });
   </script>
 </body>
-
 </html>
